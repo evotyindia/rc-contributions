@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Validate and Auto-Merge Contributions"]
+    types: [completed]
 
 permissions:
   contents: write
@@ -14,10 +17,14 @@ concurrency:
 
 jobs:
   build:
+    # Only run on successful validator runs when triggered by workflow_run
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -25,7 +32,6 @@ jobs:
           node-version: '20'
 
       - name: Aggregate and update
-        id: agg
         run: |
           node scripts/aggregate.mjs
 
