@@ -107,6 +107,8 @@ function escapeHtml(s) {
 }
 
 export async function writePrettyJson(filePath, data) {
+  // Ensure the target directory exists (fixes first-run failures)
+  await fs.mkdir(path.dirname(filePath), { recursive: true });
   const text = JSON.stringify(data, null, 2) + '\n';
   await fs.writeFile(filePath, text, 'utf8');
 }
