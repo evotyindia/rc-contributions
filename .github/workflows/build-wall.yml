@@ -1,13 +1,14 @@
+---
 name: Aggregate Data and Update Wall of Fame
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
   workflow_run:
     workflows: ["Validate and Auto-Merge Contributions"]
     types: [completed]
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: write
@@ -20,7 +21,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     # Only run if triggered by push/manual, or if workflow_run was successful
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,7 +57,8 @@ jobs:
           commit_message: "chore: update contributors data and Wall of Fame"
           branch: main
           commit_user_name: "github-actions[bot]"
-          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
+          commit_user_email: >
+            41898282+github-actions[bot]@users.noreply.github.com
           file_pattern: |
             data/contributors.json
             README.md

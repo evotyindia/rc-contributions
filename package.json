@@ -7,6 +7,7 @@
   "scripts": {
     "validate:pr": "node scripts/validate-pr.mjs",
     "aggregate": "node scripts/aggregate.mjs",
-    "update-wall": "node scripts/update-wall.mjs"
+    "update-wall": "node scripts/update-wall.mjs",
+    "test-automation": "node scripts/test-automation.mjs"
   }
 }
