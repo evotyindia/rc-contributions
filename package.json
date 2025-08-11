@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "validate:pr": "node scripts/validate-pr.mjs",
-    "aggregate": "node scripts/aggregate.mjs"
+    "aggregate": "node scripts/aggregate.mjs",
+    "update-wall": "node scripts/update-wall.mjs"
   }
 }

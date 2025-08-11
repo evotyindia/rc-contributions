@@ -4,6 +4,10 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Validate and Auto-Merge Contributions"]
+    types: [completed]
+    branches: [ main ]
 
 permissions:
   contents: write
@@ -15,9 +19,22 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Only run if triggered by push/manual, or if workflow_run was successful
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug workflow trigger
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            echo "Workflow run event:"
+            echo "  Workflow: ${{ github.event.workflow_run.name }}"
+            echo "  Conclusion: ${{ github.event.workflow_run.conclusion }}"
+            echo "  Head branch: ${{ github.event.workflow_run.head_branch }}"
+          fi
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -27,7 +44,9 @@ jobs:
       - name: Aggregate and update
         id: agg
         run: |
+          echo "Running aggregation script..."
           node scripts/aggregate.mjs
+          echo "Aggregation completed successfully"
 
       - name: Commit changes (if any)
         uses: stefanzweifel/git-auto-commit-action@v5

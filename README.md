@@ -68,9 +68,40 @@ Below is the automatically generated list of contributors. Do not edit this sect
       <td><code>24bca002</code></td>
       <td><a href="https://github.com/rahulverma">@rahulverma</a></td>
     </tr>
+    <tr>
+      <td>3</td>
+      <td>Aryan Yadav</td>
+      <td><code>24bca004</code></td>
+      <td><a href="https://github.com/evotyindia">@evotyindia</a></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Paritosh Mathur</td>
+      <td><code>24bca100</code></td>
+      <td><a href="https://github.com/paritxshh">@paritxshh</a></td>
+    </tr>
   </tbody>
 </table>
 <!-- WALL_OF_FAME_END -->
+
+## Manual Wall of Fame Update
+If the automated update isn't working, maintainers can manually update the Wall of Fame:
+
+```bash
+# Run the update script (recommended)
+npm run update-wall
+
+# Or run aggregation directly
+npm run aggregate
+# or: node scripts/aggregate.mjs
+
+# Then commit and push the changes
+git add data/contributors.json README.md
+git commit -m "chore: update Wall of Fame"
+git push
+```
+
+You can also trigger the update manually via GitHub Actions by going to the Actions tab and running the "Aggregate Data and Update Wall of Fame" workflow.
 
 ## Getting started (Quick)
 1. Fork this repository.
