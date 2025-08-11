@@ -68,6 +68,18 @@ Below is the automatically generated list of contributors. Do not edit this sect
       <td><code>24bca002</code></td>
       <td><a href="https://github.com/rahulverma">@rahulverma</a></td>
     </tr>
+    <tr>
+      <td>3</td>
+      <td>Aryan Yadav</td>
+      <td><code>24bca004</code></td>
+      <td><a href="https://github.com/evotyindia">@evotyindia</a></td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Paritosh Mathur</td>
+      <td><code>24bca100</code></td>
+      <td><a href="https://github.com/paritxshh">@paritxshh</a></td>
+    </tr>
   </tbody>
 </table>
 <!-- WALL_OF_FAME_END -->
