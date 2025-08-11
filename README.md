@@ -62,12 +62,6 @@ Below is the automatically generated list of contributors. Do not edit this sect
       <td><code>24bca001</code></td>
       <td><a href="https://github.com/aanyagupta">@aanyagupta</a></td>
     </tr>
-    <tr>
-      <td>2</td>
-      <td>Rahul Verma</td>
-      <td><code>24bca002</code></td>
-      <td><a href="https://github.com/rahulverma">@rahulverma</a></td>
-    </tr>
   </tbody>
 </table>
 <!-- WALL_OF_FAME_END -->
