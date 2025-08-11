@@ -1,0 +1,11 @@
+{
+  "name": "rc-contributions",
+  "version": "1.0.0",
+  "description": "Educational repository for students to contribute via offline form and automated validation/merge, with an auto-generated Wall of Fame.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "validate:pr": "node scripts/validate-pr.mjs",
+    "aggregate": "node scripts/aggregate.mjs"
+  }
+}

@@ -1,0 +1,89 @@
+name: Validate and Auto-Merge Contributions
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gather changed files
+        id: files
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const files = await github.paginate(
+              github.rest.pulls.listFiles,
+              { owner: context.repo.owner, repo: context.repo.repo, pull_number: pr.number, per_page: 100 }
+            );
+            const minimal = files.map(f => ({ filename: f.filename, status: f.status }));
+            const fs = require('fs');
+            fs.writeFileSync('changed-files.json', JSON.stringify(minimal, null, 2));
+            core.setOutput('count', String(minimal.length));
+
+      - name: Checkout base repo
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          ref: ${{ github.event.repository.default_branch }}
+
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: pr
+          persist-credentials: false
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate submission
+        run: |
+          node repo/scripts/validate-pr.mjs --prDir ./pr --baseDir ./repo --changedFilesPath ./changed-files.json
+        continue-on-error: false
+
+      - name: Merge PR when valid
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            // Try to add a label; ignore errors if label does not exist
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: ['accepted']
+            }).catch(() => {});
+            // Merge using squash to keep history clean
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              merge_method: 'squash'
+            });
+
+      - name: Comment on PR when invalid
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = 'Validation failed. Please check the repository rules and try again.';
+            try { body = fs.readFileSync('validation_errors.md', 'utf8'); } catch (e) {}
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body
+            });
