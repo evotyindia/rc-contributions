@@ -25,15 +25,28 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
+
+      - name: Show submissions on main
+        run: |
+          echo "Listing submissions directory..."
+          ls -la submissions || echo "No submissions directory found."
 
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Ensure data directory exists
+        run: mkdir -p data
+
       - name: Aggregate and update
+        run: node scripts/aggregate.mjs
+
+      - name: Show diff after aggregation
         run: |
-          node scripts/aggregate.mjs
+          git status
+          git --no-pager diff -- README.md data/contributors.json || true
 
       - name: Commit changes (if any)
         uses: stefanzweifel/git-auto-commit-action@v5
